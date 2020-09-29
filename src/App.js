@@ -34,27 +34,18 @@ const style = {
   }
 }
 
-export function PhoneBookForm({ addEntryToPhoneBook }) {
-  const placeholderState = {
-    userFirstname: '',
-    userLastname: '',
-    userPhone: '',
-  };
-  const [inputs, setInputs] = useState(placeholderState);
-
-  const handleChange = (event) => {
-    event.persist();
-    setInputs({
-      ...inputs,
-      [event.target.name]: event.target.value
-    });
-  };
-
+export function PhoneBookForm({ contacts, setContacts }) {
   const handleSubmit = (event) => {
     if (event) {
       event.preventDefault();
+      handleChange(event);
     }
   }
+
+  const handleChange = (event, contacts) => {
+    // event.persist();
+    setContacts(contacts => ({...contacts, [event.target.name]: event.target.value}));
+  };
 
   return (
     <form onSubmit={handleSubmit} style={style.form.container}>
@@ -64,7 +55,7 @@ export function PhoneBookForm({ addEntryToPhoneBook }) {
         style={style.form.inputs}
         className='userFirstname'
         name='userFirstname' 
-        value={ inputs.userFirstname }
+        value={ contacts.userFirstname }
         onChange={handleChange}
         placeholder='Coder'
         type='text'
@@ -77,7 +68,7 @@ export function PhoneBookForm({ addEntryToPhoneBook }) {
         className='userLastname' 
         onChange={handleChange}
         name='userLastname' 
-        value={ inputs.userLastname }
+        value={ contacts.userLastname }
         placeholder='Byte'
         type='text' 
       />
@@ -88,7 +79,7 @@ export function PhoneBookForm({ addEntryToPhoneBook }) {
         style={style.form.inputs}
         className='userPhone' 
         name='userPhone' 
-        value={ inputs.userPhone }
+        value={ contacts.userPhone }
         onChange={handleChange}
         placeholder='888-555-1212'
         type='text'
@@ -104,7 +95,7 @@ export function PhoneBookForm({ addEntryToPhoneBook }) {
   )
 }
 
-function InformationTable(props) {
+function InformationTable({contacts}) {
   return (
     <table style={style.table} className='informationTable'>
       <thead> 
@@ -115,20 +106,33 @@ function InformationTable(props) {
         </tr>
       </thead>
       <tbody>
-          <td>Chris</td>
-          <td>Tack</td>
-          <td>9893261488</td>
+        {console.log(contacts)}
+        {contacts.map(contact => {
+          return(
+            <tr key={contact}>
+              <td>{contact.userFirstname}</td>
+              <td>{contact.userLastname}</td>
+              <td>{contact.userPhone}</td>
+            </tr>
+          )}
+        )}
       </tbody>
     </table>
   );
 }
 
 function App(props) {
-  const [contacts, setContacts] = useState({});
+  const placeholderState = {
+    userFirstname: 'Test',
+    userLastname: 'One',
+    userPhone: '5558675309',
+  };
+  const [contacts, setContacts] = useState([placeholderState]);
 
   return (
     <section>
-      <PhoneBookForm contacts={ contacts } setContacts={ setContacts }/>
+      {/* {handleSubmit, handleChange, inputs} */}
+      <PhoneBookForm contacts={ contacts } setContacts={ setContacts } />
       <InformationTable contacts={ contacts }/>
     </section>
   );
